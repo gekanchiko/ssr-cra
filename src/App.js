@@ -1,25 +1,32 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { NavLink } from 'react-router-dom';
 
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
+function App({ children, navBarMenu = [] }) {
+
+  const menu = useMemo(() => {
+    return navBarMenu.map(
+      ({ path, name }, idx) =>
+        <span key={`menu-${path}`}>
+          <NavLink
+            to={path}
+            className="App-link"
+          >
+            {name}
+          </NavLink>
+          {idx < navBarMenu.length - 1 && <span className="App-link-separator">|</span>}
+        </span>
+
+    );
+  }, [navBarMenu]);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <div className="App-link-container">{menu}</div>
       </header>
+      {children}
     </div>
   );
 }
