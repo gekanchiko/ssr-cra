@@ -1,6 +1,8 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
+import Dynamic from '../componenets/Dynamic';
+
 class Module {
   constructor(...modules) {
     this.routes = modules.reduce((acc, { routes }) => routes ? [...acc, ...routes] : acc, []);
@@ -8,7 +10,18 @@ class Module {
   }
 
   getRoutes = () => {
-    return this.routes.map((props, idx) => <Route {...props} key={`route-${idx}`} />);
+    return this.routes.map(({component, url, ...props}, idx) => {
+
+      return <Route
+        {...props}
+        key={`route-${idx}`}
+        component={
+          typeof component === 'string'
+            ? () => <Dynamic external={{ name: component, url }} />
+            : component
+        }
+      />
+    });
   };
 
   getNavBarItems = () => {
